@@ -1,3 +1,4 @@
+require('dotenv').config();
 const asyncHandler = require('express-async-handler');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
@@ -12,7 +13,7 @@ exports.loginPost = asyncHandler(async (req, res, next) => {
 
   const user = await User.findOne({ email: email }).exec();
   if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: 'User not found', email, password });
   }
 
   const match = await bcrypt.compare(password, user.password);
@@ -31,6 +32,15 @@ exports.signupGet = asyncHandler(async (req, res) => {
 
 exports.signupPost = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
+
+  console.log(req)
+  res.json({
+    first: firstName,
+    last: lastName,
+    email: email,
+    pass: password
+  })
+  return;
 
   bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT), async (err, hashedPassword) => {
     if (err) return next(err);

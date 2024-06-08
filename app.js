@@ -5,8 +5,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-// const session = require("express-session");
-// const passport = require('./utils/passport');
 
 // routers
 const blogRouter = require('./routes/blog');
@@ -28,10 +26,6 @@ async function connectToMongoDB() {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-// // session
-// app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }))
-// app.use(passport.session());
 
 // middlewares
 app.use(logger('dev'));

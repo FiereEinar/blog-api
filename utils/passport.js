@@ -1,7 +1,7 @@
+require('dotenv').config();
 const passport = require('passport');
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const opts = {
@@ -17,27 +17,13 @@ passport.use(new JwtStrategy(
 
       if (!user) {
         return done(null, false);
-      } else {
-        return done(null, user);
       }
 
+      return done(null, user);
     } catch (err) {
       return done(err, false);
     };
   })
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (err) {
-    done(err);
-  };
-});
 
 module.exports = passport;

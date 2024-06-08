@@ -4,8 +4,8 @@ const { DateTime } = require("luxon");
 const Schema = mongoose.Schema;
 
 const BlogSchema = new Schema({
-  title: String,
-  text: String,
+  title: { type: String, minLength: 3 },
+  text: { type: String, minLength: 3 },
   creator: { type: Schema.Types.ObjectId, ref: 'User' },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   published: { type: Boolean, default: true },
