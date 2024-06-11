@@ -13,9 +13,9 @@ router.get('/', blogList);
 
 router.post('/', addBlog);
 
-router.put('/:blogId/update', updateBlog);
+router.put('/:blogId', updateBlog);
 
-router.delete('/:blogId/delete', deleteBlog);
+router.delete('/:blogId', deleteBlog);
 
 router.get('/:blogId', getBlog);
 

@@ -33,15 +33,6 @@ exports.signupGet = asyncHandler(async (req, res) => {
 exports.signupPost = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  console.log(req)
-  res.json({
-    first: firstName,
-    last: lastName,
-    email: email,
-    pass: password
-  })
-  return;
-
   bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT), async (err, hashedPassword) => {
     if (err) return next(err);
 
