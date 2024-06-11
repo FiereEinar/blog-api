@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
   creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  text: { type: String, minLength: 3 },
+  text: { type: String, minLength: 3, required: true },
   dateAdded: { type: Date, default: Date.now },
   hidden: { type: Boolean, default: false }
 });
