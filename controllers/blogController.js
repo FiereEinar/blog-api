@@ -35,7 +35,7 @@ exports.addBlog = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.json({ success: false, message: 'Error adding comment', errors: errors.array() });
+      return res.json({ success: false, message: 'Error adding blog', errors: errors.array() });
     }
 
     let imgUrl = '';
@@ -71,11 +71,19 @@ exports.addBlog = [
 exports.updateBlog = [
   passport.authenticate('jwt', { session: false }),
 
+  ...addBlogValidation,
+
   upload.single('blogImage'),
 
   asyncHandler(async (req, res) => {
     if (!req.user.author) {
       return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.json({ success: false, message: 'Error adding blog', errors: errors.array() });
     }
 
     const oldBlog = await Blog.findById(req.params.blogId).populate('creator');
@@ -224,7 +232,7 @@ exports.deleteBlogComment = [
     }
 
     const result = await Comment.findByIdAndDelete(req.params.commentId);
-    const updatedBlog = await Blog.findByIdAndUpdate(req.params.blogId, { $pull: { comments: req.params.commentId } }, {}).exec();
+    await Blog.findByIdAndUpdate(req.params.blogId, { $pull: { comments: req.params.commentId } }, {}).exec();
 
     res.json({ success: true, message: 'Blog comment deleted', data: result });
   })
