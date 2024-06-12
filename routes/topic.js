@@ -10,7 +10,7 @@ const {
 
 router.get('/', getTopics);
 
-router.post('/:topicId', addTopic);
+router.post('/', addTopic);
 
 router.put('/:topicId', updateTopic);
 
