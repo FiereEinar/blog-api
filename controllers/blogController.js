@@ -15,7 +15,7 @@ const {
 } = require('../utils/validations');
 
 exports.blogList = asyncHandler(async (req, res) => {
-  const blogs = await Blog.find().populate('comments').populate('creator').exec();
+  const blogs = await Blog.find().populate('comments').populate('creator').populate('topic').exec();
 
   res.json({ data: blogs });
 });
@@ -50,11 +50,13 @@ exports.addBlog = [
       await fs.unlink(req.file.path);
     }
 
-    const { title, text } = req.body;
+    const { title, text, topicId } = req.body;
 
     const blog = new Blog({
       title: title,
       text: text,
+      topic: topicId,
+      published: published ? published : true,
       creator: req.user._id,
       img: {
         url: imgUrl,
@@ -109,12 +111,13 @@ exports.updateBlog = [
       await fs.unlink(req.file.path);
     }
 
-    const { title, text, published } = req.body;
+    const { title, text, published, topicId } = req.body;
 
     const blog = new Blog({
       title: title,
       text: text,
-      published: published || oldBlog.published,
+      topic: topicId,
+      published: published ? published : oldBlog.published,
       img: {
         url: imgUrl,
         publicId: imgPublicId
@@ -151,7 +154,7 @@ exports.deleteBlog = [
 ];
 
 exports.getBlog = asyncHandler(async (req, res) => {
-  const blog = await Blog.findById(req.params.blogId);
+  const blog = await Blog.findById(req.params.blogId).populate('comments').populate('creator').populate('topic').exec();
 
   if (!blog) {
     return res.status(404).json({ sucess: false, message: 'Blog not found.' });

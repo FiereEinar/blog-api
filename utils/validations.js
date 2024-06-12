@@ -14,3 +14,9 @@ exports.addBlogValidation = [
     .trim()
     .isLength({ min: 3 }),
 ];
+
+exports.addTopicValidation = [
+  body('title', 'Title should be atleast 3 characters.')
+    .trim()
+    .isLength({ min: 3 }),
+];
