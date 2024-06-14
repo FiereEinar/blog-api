@@ -15,7 +15,15 @@ const {
 } = require('../utils/validations');
 
 exports.blogList = asyncHandler(async (req, res) => {
-	const blogs = await Blog.find().populate('comments').populate('creator').populate('topic').exec();
+	const blogs = await Blog.find()
+		.populate({
+			path: 'creator',
+			model: 'User',
+			select: 'firstName lastName email profile'
+		})
+		.populate('comments')
+		.populate('topic')
+		.exec();
 
 	res.json({ data: blogs });
 });
@@ -154,7 +162,22 @@ exports.deleteBlog = [
 ];
 
 exports.getBlog = asyncHandler(async (req, res) => {
-	const blog = await Blog.findById(req.params.blogId).populate('comments').populate('creator').populate('topic').exec();
+	const blog = await Blog.findById(req.params.blogId)
+		.populate({
+			path: 'comments',
+			populate: {
+				path: 'creator',
+				model: 'User',
+				select: 'firstName lastName email profile'
+			}
+		})
+		.populate({
+			path: 'creator',
+			model: 'User',
+			select: 'firstName lastName email profile'
+		})
+		.populate('topic')
+		.exec();
 
 	if (!blog) {
 		return res.status(404).json({ sucess: false, message: 'Blog not found.' });

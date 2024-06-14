@@ -40,6 +40,12 @@ exports.addTopic = [
   })
 ];
 
+exports.getTopicBlogs = asyncHandler(async (req, res) => {
+  const topicBlogs = await Blog.find({ topic: req.params.topicId }).exec();
+
+  res.json({ sucess: true, message: 'Topic added', data: topicBlogs })
+});
+
 exports.updateTopic = [
   passport.authenticate('jwt', { session: false }),
 

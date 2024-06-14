@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   getTopics,
   addTopic,
+  getTopicBlogs,
   updateTopic,
   deleteTopic,
 } = require('../controllers/topicController');
@@ -11,6 +12,8 @@ const {
 router.get('/', getTopics);
 
 router.post('/', addTopic);
+
+router.get('/:topicId', getTopicBlogs);
 
 router.put('/:topicId', updateTopic);
 

@@ -54,18 +54,10 @@ exports.deleteComment = [
   passport.authenticate('jwt', { session: false }),
 
   asyncHandler(async (req, res) => {
-    // const comment = await Comment.exists({ _id: req.params.commentId }).populate('creator').exec();
-
-    // if (!comment) {
-    //   return res.json({ success: false, message: 'Comment not found' });
-    // }
-
-    // if (req.user._id.toString() !== comment.creator._id.toString()) {
-    //   return res.json({ success: false, message: 'Current user is has no access rights to delete this comment' });
-    // }
-
     const result = await Comment.findByIdAndDelete(req.params.commentId);
+
     await Blog.findByIdAndUpdate()
+
     res.json({ success: true, message: 'Blog comment deleted', result });
   })
 ];
