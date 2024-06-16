@@ -12,7 +12,7 @@ const User = require('../models/user');
 const Topic = require('../models/topic');
 
 exports.getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.userId).exec();
+  const user = await User.findById(req.params.userId, 'firstName lastName email profile').exec();
 
   if (!user) {
     return res.status(404).json({ message: 'User not found' });

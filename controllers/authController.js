@@ -32,6 +32,8 @@ exports.signupGet = asyncHandler(async (req, res) => {
 
 exports.signupPost = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
+  const defaultProfileImg = 'https://res.cloudinary.com/dzbqagpqh/image/upload/v1718531180/hv9q6xynodyz7pkw6umj.webp';
+  const defaultImgPublicId = 'hv9q6xynodyz7pkw6umj';
 
   bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT), async (err, hashedPassword) => {
     if (err) return next(err);
@@ -42,8 +44,8 @@ exports.signupPost = asyncHandler(async (req, res) => {
       email: email,
       password: hashedPassword,
       profile: {
-        imgUrl: '',
-        imgPublicId: ''
+        imgUrl: defaultProfileImg,
+        imgPublicId: defaultImgPublicId
       },
     });
 
