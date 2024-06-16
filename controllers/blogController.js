@@ -228,7 +228,7 @@ exports.updateBlogComment = [
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			return res.json({ success: false, message: 'Error adding comment', errors: errors.array() });
+			return res.json({ success: false, message: 'Error updating comment', errors: errors.array() });
 		}
 
 		const comment = new Comment({

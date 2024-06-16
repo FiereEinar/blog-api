@@ -20,3 +20,16 @@ exports.addTopicValidation = [
     .trim()
     .isLength({ min: 3 }),
 ];
+
+exports.updateUserValidation = [
+  body('firstName', 'First name should not be empty.')
+    .trim()
+    .notEmpty(),
+  body('lastName', 'Last name should not be empty.')
+    .trim()
+    .notEmpty(),
+  body('email', 'Email should not be empty and should be valid.')
+    .trim()
+    .notEmpty()
+    .isEmail(),
+];

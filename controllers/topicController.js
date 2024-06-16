@@ -41,9 +41,9 @@ exports.addTopic = [
 ];
 
 exports.getTopicBlogs = asyncHandler(async (req, res) => {
-  const topicBlogs = await Blog.find({ topic: req.params.topicId }).exec();
+  const topicBlogs = await Blog.find({ topic: req.params.topicId }).populate('topic').exec();
 
-  res.json({ sucess: true, message: 'Topic added', data: topicBlogs })
+  res.json({ sucess: true, message: 'Topic blogs retrieved', data: topicBlogs })
 });
 
 exports.updateTopic = [

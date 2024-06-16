@@ -23,7 +23,7 @@ exports.loginPost = asyncHandler(async (req, res, next) => {
 
   const token = jwt.sign({ user }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
 
-  res.json({ token });
+  res.json({ token, userId: user._id });
 });
 
 exports.signupGet = asyncHandler(async (req, res) => {
@@ -40,7 +40,11 @@ exports.signupPost = asyncHandler(async (req, res) => {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: hashedPassword
+      password: hashedPassword,
+      profile: {
+        imgUrl: '',
+        imgPublicId: ''
+      },
     });
 
     await user.save()
