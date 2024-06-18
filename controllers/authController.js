@@ -30,7 +30,7 @@ exports.signupGet = asyncHandler(async (req, res) => {
   res.json({ message: 'signup get' })
 });
 
-exports.signupPost = asyncHandler(async (req, res) => {
+exports.signupPost = asyncHandler(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
   const defaultProfileImg = 'https://res.cloudinary.com/dzbqagpqh/image/upload/v1718694294/u7y8r30fkxgudgqjgheu.webp';
   const defaultImgPublicId = 'u7y8r30fkxgudgqjgheu';
