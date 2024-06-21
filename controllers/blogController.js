@@ -21,7 +21,14 @@ exports.blogList = asyncHandler(async (req, res) => {
 			model: 'User',
 			select: 'firstName lastName email profile'
 		})
-		.populate('comments')
+		.populate({
+			path: 'comments',
+			populate: {
+				path: 'creator',
+				model: 'User',
+				select: 'firstName lastName email profile'
+			}
+		})
 		.populate('topic')
 		.exec();
 
@@ -37,7 +44,7 @@ exports.addBlog = [
 
 	asyncHandler(async (req, res) => {
 		if (!req.user.author) {
-			return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+			return res.status(401).json({ success: false, message: 'Unauthorized access.' });
 		}
 
 		const errors = validationResult(req);
@@ -74,7 +81,7 @@ exports.addBlog = [
 
 		blog.save();
 
-		res.json({ sucess: true, message: 'Blog added', data: blog });
+		res.json({ success: true, message: 'Blog added', data: blog });
 	})
 ];
 
@@ -87,7 +94,7 @@ exports.updateBlog = [
 
 	asyncHandler(async (req, res) => {
 		if (!req.user.author) {
-			return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+			return res.status(401).json({ success: false, message: 'Unauthorized access.' });
 		}
 
 		const errors = validationResult(req);
@@ -98,11 +105,11 @@ exports.updateBlog = [
 
 		const oldBlog = await Blog.findById(req.params.blogId).populate('creator');
 		if (!oldBlog) {
-			return res.status(404).json({ sucess: false, message: 'Blog not found.' });
+			return res.status(404).json({ success: false, message: 'Blog not found.' });
 		}
 
 		if (oldBlog.creator._id.toString() !== req.user._id.toString()) {
-			return res.status(401).json({ sucess: false, message: 'Current user has no rights to edit this blog.' });
+			return res.status(401).json({ success: false, message: 'Current user has no rights to edit this blog.' });
 		}
 
 		let imgUrl = oldBlog.img.url;
@@ -121,7 +128,7 @@ exports.updateBlog = [
 
 		const { title, text, published, topicId } = req.body;
 
-		const blog = new Blog({
+		const blog = {
 			title: title,
 			text: text,
 			topic: topicId,
@@ -131,12 +138,11 @@ exports.updateBlog = [
 				publicId: imgPublicId
 			},
 			_id: oldBlog._id
-		});
+		};
 
-		// it returns the old blog and NOT the update blog for some reason?
-		const updatedBlog = await Blog.findByIdAndUpdate(req.params.blogId, blog, {});
+		const updatedBlog = await Blog.findByIdAndUpdate(req.params.blogId, blog, { new: true, runValidators: true }).exec();
 
-		res.json({ sucess: true, message: 'blog updated', data: updatedBlog });
+		res.json({ success: true, message: 'blog updated', data: updatedBlog });
 	})
 ];
 
@@ -145,19 +151,19 @@ exports.deleteBlog = [
 
 	asyncHandler(async (req, res) => {
 		if (!req.user.author) {
-			return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+			return res.status(401).json({ success: false, message: 'Unauthorized access.' });
 		}
 
 		const blogExists = await Blog.exists({ _id: req.params.blogId }).exec();
 
 		if (!blogExists) {
-			return res.status(404).json({ sucess: false, message: 'Blog not found.' });
+			return res.status(404).json({ success: false, message: 'Blog not found.' });
 		}
 
-		await Blog.findByIdAndDelete(req.params.blogId);
 		await cloudinary.uploader.destroy(blogExists.img.publicId)
+		await Blog.findByIdAndDelete(req.params.blogId);
 
-		res.json({ sucess: true, message: 'Blog deleted' });
+		res.json({ success: true, message: 'Blog deleted' });
 	})
 ];
 
@@ -180,10 +186,10 @@ exports.getBlog = asyncHandler(async (req, res) => {
 		.exec();
 
 	if (!blog) {
-		return res.status(404).json({ sucess: false, message: 'Blog not found.' });
+		return res.status(404).json({ success: false, message: 'Blog not found.' });
 	}
 
-	res.json({ sucess: true, message: 'Blog found', data: blog });
+	res.json({ success: true, message: 'Blog found', data: blog });
 });
 
 // Comment endpoints
@@ -231,13 +237,13 @@ exports.updateBlogComment = [
 			return res.json({ success: false, message: 'Error updating comment', errors: errors.array() });
 		}
 
-		const comment = new Comment({
+		const comment = {
 			text: req.body.text,
 			creator: req.user,
 			_id: req.params.commentId
-		});
+		};
 
-		const updatedComment = await Comment.findByIdAndUpdate(req.params.commentId, comment, {});
+		const updatedComment = await Comment.findByIdAndUpdate(req.params.commentId, comment, { new: true, runValidators: true }).exec();
 
 		res.json({ success: true, message: 'Blog comment updated', data: updatedComment });
 	})

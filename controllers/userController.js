@@ -51,7 +51,7 @@ exports.updateUserById = [
       await fs.unlink(req.file.path);
     }
 
-    const user = new User({
+    const user = {
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -60,9 +60,9 @@ exports.updateUserById = [
         imgPublicId: profilePrublicId
       },
       _id: req.params.userId
-    });
+    };
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.userId, user, { new: true }).exec();
+    const updatedUser = await User.findByIdAndUpdate(req.params.userId, user, { new: true, runValidators: true }).exec();
 
     return res.json({ data: updatedUser });
   })

@@ -11,7 +11,7 @@ const Topic = require('../models/topic');
 exports.getTopics = asyncHandler(async (req, res) => {
   const topics = await Topic.find();
 
-  res.json({ sucess: true, message: 'Topic added', data: topics });
+  res.json({ success: true, message: 'Topic sent', data: topics });
 });
 
 exports.addTopic = [
@@ -21,7 +21,7 @@ exports.addTopic = [
 
   asyncHandler(async (req, res) => {
     if (!req.user.author) {
-      return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+      return res.status(401).json({ success: false, message: 'Unauthorized access.' });
     }
 
     const errors = validationResult(req);
@@ -36,14 +36,14 @@ exports.addTopic = [
 
     await topic.save();
 
-    res.json({ sucess: true, message: 'Topic added', data: topic });
+    res.json({ success: true, message: 'Topic added', data: topic });
   })
 ];
 
 exports.getTopicBlogs = asyncHandler(async (req, res) => {
   const topicBlogs = await Blog.find({ topic: req.params.topicId }).populate('topic').exec();
 
-  res.json({ sucess: true, message: 'Topic blogs retrieved', data: topicBlogs })
+  res.json({ success: true, message: 'Topic blogs retrieved', data: topicBlogs })
 });
 
 exports.updateTopic = [
@@ -53,7 +53,7 @@ exports.updateTopic = [
 
   asyncHandler(async (req, res) => {
     if (!req.user.author) {
-      return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+      return res.status(401).json({ success: false, message: 'Unauthorized access.' });
     }
 
     const errors = validationResult(req);
@@ -62,14 +62,14 @@ exports.updateTopic = [
       return res.json({ success: false, message: 'Error adding blog', errors: errors.array() });
     }
 
-    const topic = new Topic({
+    const topic = {
       title: req.body.title,
       _id: req.params.topicId
-    });
+    };
 
-    const result = await Topic.findByIdAndUpdate(req.params.topicId, topic, {}).exec();
+    const result = await Topic.findByIdAndUpdate(req.params.topicId, topic, { new: true, runValidators: true }).exec();
 
-    res.json({ sucess: true, message: 'Topic added', data: result });
+    res.json({ success: true, message: 'Topic updated', data: result });
   })
 ];
 
@@ -78,11 +78,11 @@ exports.deleteTopic = [
 
   asyncHandler(async (req, res) => {
     if (!req.user.author) {
-      return res.status(401).json({ sucess: false, message: 'Unauthorized access.' });
+      return res.status(401).json({ success: false, message: 'Unauthorized access.' });
     }
 
     const result = await Topic.findByIdAndDelete(req.params.topicId);
 
-    res.json({ sucess: true, message: 'Topic added', data: result });
+    res.json({ success: true, message: 'Topic deleted', data: result });
   })
 ];
