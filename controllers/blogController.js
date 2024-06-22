@@ -154,7 +154,7 @@ exports.deleteBlog = [
 			return res.status(401).json({ success: false, message: 'Unauthorized access.' });
 		}
 
-		const blogExists = await Blog.exists({ _id: req.params.blogId }).exec();
+		const blogExists = await Blog.findById(req.params.blogId);
 
 		if (!blogExists) {
 			return res.status(404).json({ success: false, message: 'Blog not found.' });
@@ -240,6 +240,7 @@ exports.updateBlogComment = [
 		const comment = {
 			text: req.body.text,
 			creator: req.user,
+			hidden: req.hidden,
 			_id: req.params.commentId
 		};
 
@@ -267,5 +268,23 @@ exports.deleteBlogComment = [
 		await Blog.findByIdAndUpdate(req.params.blogId, { $pull: { comments: req.params.commentId } }, {}).exec();
 
 		res.json({ success: true, message: 'Blog comment deleted', data: result });
+	})
+];
+
+exports.hideComment = [
+	passport.authenticate('jwt', { session: false }),
+
+	asyncHandler(async (req, res) => {
+		if (req.body.hidden === undefined) {
+			return res.status(400).json({ success: false, message: 'Undefined value for "hidden" property.' })
+		}
+
+		const update = {
+			hidden: req.body.hidden
+		}
+
+		const updatedComment = await Comment.findByIdAndUpdate(req.params.commentId, update, { new: true, runValidators: true }).exec();
+
+		res.json({ success: true, message: 'Blog comment updated', data: updatedComment });
 	})
 ];

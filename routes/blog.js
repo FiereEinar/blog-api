@@ -11,6 +11,7 @@ const {
   addCommentToBlog,
   updateBlogComment,
   deleteBlogComment,
+  hideComment,
 } = require('../controllers/blogController');
 
 router.get('/', blogList);
@@ -29,6 +30,8 @@ router.get('/:blogId/comments', getBlogComments);
 router.post('/:blogId/comments', addCommentToBlog);
 
 router.put('/:blogId/comments/:commentId', updateBlogComment);
+
+router.put('/:blogId/comments/:commentId/hide', hideComment);
 
 router.delete('/:blogId/comments/:commentId', deleteBlogComment);
 
