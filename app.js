@@ -16,15 +16,7 @@ const userRouter = require('./routes/user');
 const app = express();
 
 // Set up mongoose connection
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-const mongoDB = process.env.DATABASE_URI;
-
-connectToMongoDB().catch((err) => console.log(err));
-
-async function connectToMongoDB() {
-  await mongoose.connect(mongoDB);
-}
+require('./utils/mongodb');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
